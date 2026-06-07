@@ -1,0 +1,15 @@
+FROM node:{{NODE_VERSION}}-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+{{BUILD_STEP}}
+
+EXPOSE {{PORT}}
+
+CMD {{CMD}}
