@@ -4,6 +4,18 @@ const frameworkDetector = require("../detectors/frameworkDetector");
 const dockerfileGenerator = require("../generators/dockerfileGenerator");
 const readline = require('readline/promises');
 const { stdin: input, stdout: output } = require('process');
+// Terminal color definitions
+const colors = {
+    reset: '\x1b[0m',
+    bright: '\x1b[1m',
+    dim: '\x1b[2m',
+    cyan: '\x1b[36m',
+    green: '\x1b[32m',
+    yellow: '\x1b[33m',
+    blue: '\x1b[34m',
+    magenta: '\x1b[35m',
+    red: '\x1b[31m'
+};
 
 /**
  * Prompts the user to confirm/customize the configuration and specify the port.
@@ -22,26 +34,26 @@ async function askQuestions(framework) {
             framework.cache === false;
 
         if (hasUndetectedFields) {
-            console.log("\nDetected Configuration:");
-            console.log(JSON.stringify(framework, null, 2));
-            const isCorrect = await rl.question('\nSome configuration fields are not detected or false. Is this configuration correct? (y/n) [y]: ');
+            console.log(`\n${colors.bright}${colors.cyan}🔍 Detected Configuration:${colors.reset}`);
+            console.log(colors.dim + JSON.stringify(framework, null, 2) + colors.reset);
+            const isCorrect = await rl.question(`\n⚠️  ${colors.bright}${colors.yellow}Some configuration fields are not detected or false. Is this configuration correct? (y/n) [y]: ${colors.reset}`);
             
             if (isCorrect.trim().toLowerCase() === 'n' || isCorrect.trim().toLowerCase() === 'no') {
-                console.log('\nPlease customize the configuration:');
+                console.log(`\n⚙️  ${colors.bright}${colors.cyan}Please customize the configuration:${colors.reset}`);
                 
-                const dbAnswer = await rl.question(`Enter database type (mongodb/postgresql/mysql/sqlite/none) [${framework.database || 'none'}]: `);
+                const dbAnswer = await rl.question(`   ${colors.bright}Enter database type${colors.reset} (mongodb/postgresql/mysql/sqlite/none) [${framework.database || 'none'}]: `);
                 const db = dbAnswer.trim().toLowerCase();
                 if (db) {
                     framework.database = db === 'none' ? null : db;
                 }
 
-                const realtimeAnswer = await rl.question(`Does the app require realtime support (socket.io/ws)? (y/n) [${framework.realtime ? 'y' : 'n'}]: `);
+                const realtimeAnswer = await rl.question(`   ${colors.bright}Does the app require realtime support (socket.io/ws)?${colors.reset} (y/n) [${framework.realtime ? 'y' : 'n'}]: `);
                 framework.realtime = realtimeAnswer.trim().toLowerCase() === 'y';
 
-                const uploadAnswer = await rl.question(`Does the app require file upload support (multer/formidable)? (y/n) [${framework.upload ? 'y' : 'n'}]: `);
+                const uploadAnswer = await rl.question(`   ${colors.bright}Does the app require file upload support (multer/formidable)?${colors.reset} (y/n) [${framework.upload ? 'y' : 'n'}]: `);
                 framework.upload = uploadAnswer.trim().toLowerCase() === 'y';
 
-                const cacheAnswer = await rl.question(`Does the app require caching support (redis)? (y/n) [${framework.cache ? 'y' : 'n'}]: `);
+                const cacheAnswer = await rl.question(`   ${colors.bright}Does the app require caching support (redis)?${colors.reset} (y/n) [${framework.cache ? 'y' : 'n'}]: `);
                 framework.cache = cacheAnswer.trim().toLowerCase() === 'y';
             }
         }
@@ -54,7 +66,7 @@ async function askQuestions(framework) {
             defaultPort = '80';
         }
 
-        const portAnswer = await rl.question(`\nEnter the port to expose [${defaultPort}]: `);
+        const portAnswer = await rl.question(`\n⚡ ${colors.bright}${colors.green}Enter the port to expose${colors.reset} [${defaultPort}]: `);
         const port = portAnswer.trim() || defaultPort;
 
         return { framework, port };
@@ -70,6 +82,7 @@ async function analyze() {
     const projectInfo = await scanProject();
     const dependencies = await packageAnalyzer(projectInfo);
     const framework = frameworkDetector(dependencies);
+
 
     const { framework: finalFramework, port } = await askQuestions(framework);
 

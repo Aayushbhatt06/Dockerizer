@@ -43,7 +43,7 @@ async function dockerfileGenerator(detectedConfig, port, cmd, buildStep) {
         // 3. Write Dockerfile to the scanned project root (process.cwd())
         const destDockerfilePath = path.join(process.cwd(), 'Dockerfile');
         await fs.writeFile(destDockerfilePath, dockerfileContent, 'utf8');
-        console.log(`Dockerfile generated successfully from template "${templateName}" using Node version ${nodeVersion}!`);
+        console.log(`\n✨ \x1b[1m\x1b[32mDockerfile generated successfully\x1b[0m from template "\x1b[36m${templateName}\x1b[0m" using Node version \x1b[36m${nodeVersion}\x1b[0m!`);
 
         // 4. Generate .dockerignore in the scanned project root
         const destDockerignorePath = path.join(process.cwd(), '.dockerignore');
@@ -60,10 +60,10 @@ async function dockerfileGenerator(detectedConfig, port, cmd, buildStep) {
         ].join('\n') + '\n';
 
         await fs.writeFile(destDockerignorePath, dockerignoreContent, 'utf8');
-        console.log('.dockerignore generated successfully!');
+        console.log(`✨ \x1b[1m\x1b[32m.dockerignore generated successfully!\x1b[0m`);
 
     } catch (error) {
-        console.error('Error generating Dockerfile/dockerignore:', error);
+        console.error('\x1b[31mError generating Dockerfile/dockerignore:\x1b[0m', error);
     }
 }
 
