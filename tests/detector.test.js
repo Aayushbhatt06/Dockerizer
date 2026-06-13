@@ -55,3 +55,71 @@ test('frameworkDetector - falls back to unknown/default on empty dependencies', 
         cache: false
     });
 });
+
+test('frameworkDetector - detects react frontend project', () => {
+    const packageInfo = {
+        dependencies: {
+            react: '^19.0.0',
+            'react-dom': '^19.0.0',
+            axios: '^1.11.0',
+            'react-router-dom': '^7.8.0'
+        },
+        devDependencies: {}
+    };
+
+    const result = frameworkDetector(packageInfo);
+
+    assert.deepStrictEqual(result, {
+        runtime: 'node',
+        framework: 'react',
+        database: null,
+        realtime: false,
+        upload: false,
+        cache: false
+    });
+});
+test('frameworkDetector - detects react with vite', () => {
+    const packageInfo = {
+        dependencies: {
+            react: '^19.0.0',
+            'react-dom': '^19.0.0'
+        },
+        devDependencies: {
+            vite: '^7.0.0',
+            '@vitejs/plugin-react': '^5.0.0'
+        }
+    };
+
+    const result = frameworkDetector(packageInfo);
+
+    assert.deepStrictEqual(result, {
+        runtime: 'node',
+        framework: 'react-vite',
+        database: null,
+        realtime: false,
+        upload: false,
+        cache: false
+    });
+});
+
+test('frameworkDetector - detects nextjs instead of react', () => {
+    const packageInfo = {
+        dependencies: {
+            next: '^15.0.0',
+            react: '^19.0.0',
+            'react-dom': '^19.0.0'
+        },
+        devDependencies: {}
+    };
+
+    const result = frameworkDetector(packageInfo);
+
+    assert.deepStrictEqual(result, {
+        runtime: 'node',
+        framework: 'next',
+        database: null,
+        realtime: false,
+        upload: false,
+        cache: false
+    });
+});

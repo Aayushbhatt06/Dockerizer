@@ -53,7 +53,10 @@ async function dockerfileGenerator(detectedConfig, port, cmd, buildStep) {
             '.git',
             '.gitignore',
             'Dockerfile',
-            '.dockerignore'
+            '.dockerignore',
+            '.env',
+            '.env.*',
+            '!.env.example'
         ].join('\n') + '\n';
 
         await fs.writeFile(destDockerignorePath, dockerignoreContent, 'utf8');
