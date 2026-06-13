@@ -1,11 +1,10 @@
 {
   "name": "@aayush-dev/dockerizer",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "main": "index.js",
   "bin": {
     "dockerizer": "./index.js"
   },
-
   "scripts": {
     "test": "node --test tests/*.test.js"
   },
